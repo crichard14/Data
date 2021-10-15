@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Vega-Lite Bar Chart</title>
+    <meta charset="utf-8" />
+
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.18.2"></script>
+    <link rel="stylesheet" href="Assignment 2.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald&family=Ubuntu&display=swap" rel="stylesheet">
+    <style media="screen">
+      /* Add space between Vega-Embed links  */
+      .vega-actions a {
+        margin-right: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Template for Embedding Vega-Lite Visualization</h1>
+    <h1>Data Visualization 2</h1>
+    <h2>Choropleth Map</h2>
+    
+    
+
+    <h2>Top 5 Most populated Country</h2>
+    <!-- Container for the visualization -->
+    <div id="vis"></div>
+
+    <script>
+      // Assign the specification to a local variable vlSpec.
+      var vlSpec = {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "description": "A bar chart that sorts the y-values by the x-values.",
+    "data": {"url": "https://raw.githubusercontent.com/crichard14/Data/main/AsiaPopulation2020.csv"},
+    "height": {"step": 20},
+      
+    "mark": "bar",
+    "encoding": {
+      "y": {
+        "field": "Country",
+        "type": "nominal",
+        "sort": "-x"
+      },
+      "x": {
+        "aggregate": "sum",
+        "type": "quantitative",
+        "field": "Population",
+        "title": "population"
+      }
+    }
+  }
+  ;
+      
+      // Embed the visualization in the container with id `vis`
+      vegaEmbed('#vis', vlSpec);
+    </script>
+
+    <h2>Scatterplot</h2>
+    <!-- Container for the visualization -->
+    <div id="vis2"></div>
+
+    <script>
+      // Assign the specification to a local variable vlSpec.
+      var v2Spec = {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "description": "A scatterplot showing horsepower and miles per gallons that opens a Google search for the car that you click on.",
+    "data": {"url": "https://raw.githubusercontent.com/crichard14/Data/main/AsiaPopulation2020.csv"},
+    "mark": "point",
+    "transform": [{
+      "calculate": "'https://www.google.com/search?q=' + datum.Name", "as": "url"
+    }],
+    "encoding": {
+      "x": {"field": "LandArea", "type": "quantitative"},
+      "y": {"field": "Population", "type": "quantitative"},
+      "color": {"field": "Country", "type": "nominal"},
+      "tooltip": [{"field": "Country", "type": "nominal"},
+      {"field": "LandArea", "type": "quantitative"},
+      {"field": "Population", "type": "quantitative"}
+  
+      ]
+      
+    }
+  }
+  
+  ;
+      
+      // Embed the visualization in the container with id `vis`
+      vegaEmbed('#vis2', v2Spec);
+    </script>
+  </body>
+</html>
