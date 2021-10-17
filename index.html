@@ -28,13 +28,13 @@
         // Assign the specification to a local variable vlSpec.
         var Choropleth = {
             "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "title": "Density of Asian Countries in 2020 (People/KM Square)",
+            "title": "COVID-19 Active Cases (10 Oct 2020)",
             "width": 800,
             "height": 600,
             "projection": {"type": "equirectangular"},
             "data": {
-                "url": "https://raw.githubusercontent.com/crichard14/Data/main/Asia.json",
-                "format": {"type": "topojson", "feature": "Asia"}
+            "url": "https://raw.githubusercontent.com/crichard14/Data/gh-pages/Asia.json",
+            "format": {"type": "topojson", "feature": "Asia"}
             },
             "transform": [
             {
@@ -46,21 +46,22 @@
             "key": "Country",
             "fields": ["Density"]
             }
-            }
+            },
+            {"calculate": "datum.Active + 0.1", "as": "Active Cases"}
             ],
             "mark": {"type": "geoshape"},
             "encoding": {
-                "color": {
-                    "field": "Density",
-                    "type": "quantitative",
-                    "scale": {"type": "log"}
-                },
-                "tooltip": [
-                    {"field": "properties.name", "type": "nominal", "title": "Country"},
-                    {"field": "Density", "type": "quantitative"},
-                ]
+            "color": {
+            "field": "Density",
+            "type": "quantitative",
+            "scale": {"type": "log"}
+            },
+            "tooltip": [
+            {"field": "properties.NAME", "type": "nominal", "title": "Country"},
+            {"field": "Active", "type": "quantitative"}
+            ]
             }
-        }
+            }
     ;
         
         // Embed the visualization in the container with id `vis`
