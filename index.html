@@ -9,313 +9,457 @@
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.18.2"></script>
 
     <link rel="stylesheet" href="Assignment2.css">
+    <!-- Import pure.css -->
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald&family=Ubuntu&display=swap" rel="stylesheet">
-    <style media="screen">
-      /* Add space between Vega-Embed links  */
-      .vega-actions a {
-        margin-right: 5px;
-      }
-    </style>
+    
   </head>
   <body>
-    <h1>Data Visualization 2</h1>
-    <h2>Choropleth Map</h2>
-    <div id="Choro">
-        <script>
-        // Assign the specification to a local variable vlSpec.
-        var Choropleth = {
-            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "title": "COVID-19 Active Cases (10 Oct 2020)",
-            "width": 800,
-            "height": 600,
-            "projection": {"type": "equirectangular"},
-            "data": {
-                "url": "https://raw.githubusercontent.com/crichard14/Data/gh-pages/Asia.json",
-                "format": {"type": "topojson", "feature": "Asia"}
-            },
-            "transform": [
-            {
-                "lookup": "properties.name",
-                "from": {
-                "data": {
-                    "url": "https://raw.githubusercontent.com/crichard14/Data/gh-pages/AsiaPopulation2020.csv"
-                },
-                "key": "Country",
-                "fields": ["Density"]
-                }
-            },
-            {"calculate": "datum.Active + 0.1", "as": "Active Cases"}
-            ],
-            "mark": {"type": "geoshape"},
-            "encoding": {
-            "color": {
-            "field": "Density",
-            "type": "quantitative",
-            "scale": {"type": "log"}
-            },
-            "tooltip": [
-                {"field": "properties.name", "type": "nominal", "title": "Country"},
-                {"field": "Density", "type": "quantitative", "format": ","}
-            ]
-            }
-        }
-    ;
-        
-        // Embed the visualization in the container with id `vis`
-        vegaEmbed('#Choro', Choropleth);
-        </script>
+    <div class="header">
+        <div class="pure-g">
+            
+            <div class="pure-u-1-2">
+                <h3 id="header1">
+                    <a href="https://handbook.monash.edu/2022/units/FIT3179?year=2022" id="fit">FIT3179</a>
+                </h3>
+
+              </div>
+              <div class="pure-u-1-2">
+                <h3 id="header2">Data Visualization 2 ‎‎ㅤㅤChristopher Richard Hartono</h3>
+            </div>
+          </div>
+             
     </div>
 
-    <h2>Scatterplot</h2>
-    <!-- Container for the visualization -->
-    <div id="Scatter">
+    <div class="page">
 
-        <script>
-        // Assign the specification to a local variable vlSpec.
-        var Scatterplot = {
-            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "width": 400,
-            "height": 400,
-            "description": "A scatterplot showing Population vs Area (Density).",
-            "data": {
-                "url": "https://raw.githubusercontent.com/crichard14/Data/main/AsiaPopulation2020.csv"
-            },
-            "params": [
-                {
-                "name": "region_filter",
-                "bind": {
-                    "input": "select",
-                    "options": [
-                    null,
-                    "Central Asia",
-                    "East Asia",
-                    "South Asia",
-                    "Southeast Asia",
-                    "Southwest Asia",
-                    "Western Asia"
-                    ],
-                    "labels":[
-                    "Show All",
-                    "Central Asia",
-                    "East Asia",
-                    "South Asia",
-                    "Southeast Asia",
-                    "Southwest Asia",
-                    "Western Asia"
-                    ],
-                    "name": "Region Selection: "
-                }
-                }
-            ],
-
-
-            "mark": "circle",
-            "transform": [
+        <div class="pure-g">
+            <div class="pure-u-1-1">
+                <h1>Population of Asia in 2020</h1>
                 
-                {"filter": "region_filter == null || datum.SubRegion == region_filter"}
-            ],
-            "encoding": {
-                "x": {
-                "field": "LandArea",
-                "type": "quantitative",
-                "title": "Land Area (P/KMsquare)",
-                "scale": {"type": "log", "domain": [1, 10000000000]}
-                },
-                "y": {
-                "field": "Population",
-                "type": "quantitative",
-                "title": "Population",
-                "scale": {"type": "log", "domain": [1, 10000000000]}
-                },
-                "size":{
-                    "scale":{}
-                },
-                "color": {
-                    "field": "SubRegion",
-                    "type": "nominal",
-                    "scale": {
-                        "domain": [
-                        "Central Asia",
-                        "East Asia",
-                        "South Asia",
-                        "Southeast Asia",
-                        "Southwest Asia",
-                        "Western Asia"
-                        ],
-                        "range": [
-                        "#e41a1c",
-                        "#377eb8",
-                        "#984ea3",
-                        "#ff7f00",
-                        "#4daf4a",
-                        "#a65628"
-                        ]
-                    }
-                },
-                "opacity": {
-                    "condition": {"param": "region_filter", "value": 0.8},
-                    "value": 0.6
-                    },
-                "tooltip": [
-                {"field": "Country", "type": "nominal"},
-                {"field": "LandArea", "type": "quantitative", "format": ","},
-                {"field": "Population", "type": "quantitative", "format": ","}
-                ]
-            }
-        } 
-    ;
+                <p id="popu">
+                    Asia is the largest and most populous of earth's continents and
+                    its located in both the northern and eastern hemispheres.
+                    Asia comprises a full 30% of the world's land area with more than 55% of
+                    the world's current population. It also has the highest growth
+                    rate today, and its population almost quadrupled during the 20th
+                    century.
+
+                </p>
+                <hr>
+            </div>
+        </div>
         
-        // Embed the visualization in the container with id `vis`
-        vegaEmbed('#Scatter', Scatterplot);
-        </script>
-    </div>
-    
-
-    <h2>Top 5 Most populated Country</h2>
-    <!-- Container for the visualization -->
-    <div id="Bar">
-
-        <script>
-        // Assign the specification to a local variable vlSpec.
-        var Top5 = {
-            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "width": 400,
-            "height": 400,
-            "description": "Top 5 most populated Country.",
-            "data": {
-                "url": "https://raw.githubusercontent.com/crichard14/Data/main/Top5Populated.csv"
-            },
-            "height": {"step": 20},
-            "mark": "bar",
-            "encoding": {
-                "y": {"field": "Country", "type": "nominal", "sort": "-x"},
-                "x": {
-                "aggregate": "sum",
-                "type": "quantitative",
-                "field": "Population",
-                "title": "population"
-                },
-                "tooltip": [
-                    {"field": "Country", "type": "nominal"},
-                    {"field": "MedAge", "type": "nominal"},
-                    {"field": "FertRate", "type": "quantitative", "format": ","},
-                    {"field": "Population", "type": "quantitative", "format": ","}  
-                
-                ]
-            }
-         }
-        // Embed the visualization in the container with id `vis`
-        vegaEmbed('#Bar', Top5);
-        </script>
-    </div>
-
-    <h2>Fertility Rate Vs Age</h2>
-    <!-- Container for the visualization -->
-    <div id="Bubble">
-
-        <script>
-        // Assign the specification to a local variable vlSpec.
-        var Fertile = {
-            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "width": 600,
-            "height": 600,
-            "title": "Fertility Rate per Country 2020",
-            "data": {
-                "url": "https://raw.githubusercontent.com/crichard14/Data/main/AsiaPopulation2020.csv"
-            },
-            "params":[
-                {
-                "name": "reg_highlight",
-                "select": {"type": "point", "fields": ["SubRegion"]},
-                "bind": "legend"
-                },
-                {
-            "name": "Population_Above",
-            "value": 0,
-            "bind": {
-                "input": "range",
-                "min": 0,
-                "max": 100000000,
-                "step": 1000000,
-                "name": "Minimum Population: "
-                }  
-            }
-
-            ],
-            "transform": [
-            {"filter": "datum.Population > Population_Above"}
-            ],
-
-
-            "mark": "circle",
-            "encoding": {
-                "x": {
-                    "field": "MedAge",
-                    "type": "quantitative",
-                    "title": "Median Age"
-                },
-                "y": {
-                    "field": "FertRate",
-                    "type": "quantitative",
-                    "title": "Fertility Rate(%)"
-                },
-                "color": {
-                    "field": "SubRegion",
-                    "type": "nominal",
-                    "scale": {
-                        "domain": [
-                        "Central Asia",
-                        "East Asia",
-                        "South Asia",
-                        "Southeast Asia",
-                        "Southwest Asia",
-                        "Western Asia"
-                        ],
-                        "range": [
-                        "#e41a1c",
-                        "#377eb8",
-                        "#984ea3",
-                        "#ff7f00",
-                        "#4daf4a",
-                        "#a65628"
-                        ]
-                    }
-
-                },
-                "opacity": {
-                    "condition": {"param": "reg_highlight", "value": 0.8},
-                    "value": 0.2
-                    },
-
-                "size": {
-                    "field": "Population",
-                    "type": "quantitative",
-                    "scale": {
-                        "type": "threshold",
-                        "domain": [1000000, 10000000, 50000000, 100000000,  500000000,900000000],
-                        "range": [ 50, 150, 200, 300, 400, 500, 900]
+        <div class="pure-g">
+            <div class="pure-u-1-1">
+                <h2 id="choroh2">Density of Asian Countries</h2>
+                <div id="Choro">
+                    <script>
+                    // Assign the specification to a local variable vlSpec.
+                    var Choropleth = {
+                        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                        "title": "",
+                        "width": 800,
+                        "height": 600,
+                        "projection": {"type": "equirectangular"},
+                        "data": {
+                            "url": "https://raw.githubusercontent.com/crichard14/Data/gh-pages/Asia.json",
+                            "format": {"type": "topojson", "feature": "Asia"}
                         },
+                        "transform": [
+                        {
+                            "lookup": "properties.name",
+                            "from": {
+                            "data": {
+                                "url": "https://raw.githubusercontent.com/crichard14/Data/gh-pages/AsiaPopulation2020.csv"
+                            },
+                            "key": "Country",
+                            "fields": ["Density"]
+                            }
+                        },
+                        {"calculate": "datum.Active + 0.1", "as": "Active Cases"}
+                        ],
+                        "mark": {"type": "geoshape"},
+                        "encoding": {
+                        "color": {
+                            "field": "Density",
+                            "type": "quantitative",
+                            "scale": { "scheme": "Browns", "type": "log"}
+                        },
+                        "tooltip": [
+                            {"field": "properties.name", "type": "nominal", "title": "Country"},
+                            {"field": "Density", "type": "quantitative", "format": ","}
+                        ]
+                        }
+                    }
+                ;
                     
-                    "legend": {"format": ".1s"}
-                },
-                "tooltip": [
-                    {"field": "Country", "type": "nominal"},
-                    {"field": "MedAge", "type": "nominal"},
-                    {"field": "FertRate", "type": "quantitative", "format": ","},
-                    {"field": "Population", "type": "quantitative", "format": ","}  
+                    // Embed the visualization in the container with id `vis`
+                    vegaEmbed('#Choro', Choropleth);
+                    </script>
+                </div>
+                <p>There are more than 4.6 billion people living in Asia, 
+                    which means more than 55% of the world population is in Asia.</p>
+                <hr>
+            </div>
+        </div>
+
+
+        <div class="pure-g">
+            <div class="pure-u-1-2">
+                <h2>Population and Land Area Comparison </h2>
+                <p> In general there seems to be a positive linear relationship between
+                     the number of population and the land area of the country. 
+                     And we can see that the density of a country depends on its number of population 
+                    and land area. A country's density is higher if the number of population is higher 
+                    or the land area is smaller and vice versa.</p>
+            </div>
+
+            <div class="pure-u-1-2">
+                <!-- Container for the visualization -->
+                <div id="Scatter">
+
+                    <script>
+                    // Assign the specification to a local variable vlSpec.
+                    var Scatterplot = {
+                        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                        "width": 250,
+                        "height": 250,
+                        "description": "A scatterplot showing Population vs Area (Density).",
+                        "data": {
+                            "url": "https://raw.githubusercontent.com/crichard14/Data/main/AsiaPopulation2020.csv"
+                        },
+                        "params": [
+                            {
+                            "name": "region_filter",
+                            "bind": {
+                                "input": "select",
+                                "options": [
+                                null,
+                                "Central Asia",
+                                "East Asia",
+                                "South Asia",
+                                "Southeast Asia",
+                                "Southwest Asia",
+                                "Western Asia"
+                                ],
+                                "labels":[
+                                "Show All",
+                                "Central Asia",
+                                "East Asia",
+                                "South Asia",
+                                "Southeast Asia",
+                                "Southwest Asia",
+                                "Western Asia"
+                                ],
+                                "name": "Region Selection: "
+                            }
+                            }
+                        ],
+
+
+                        "mark": "circle",
+                        "transform": [
+                            
+                            {"filter": "region_filter == null || datum.SubRegion == region_filter"}
+                        ],
+                        "encoding": {
+                            "x": {
+                            "field": "LandArea",
+                            "type": "quantitative",
+                            "title": "Land Area (KMsquare)",
+                            "scale": {"type": "log", "domain": [1, 10000000000]}
+                            },
+                            "y": {
+                            "field": "Population",
+                            "type": "quantitative",
+                            "title": "Population",
+                            "scale": {"type": "log", "domain": [1, 10000000000]}
+                            },
+                            "size":{
+                                "scale":{}
+                            },
+                            "color": {
+                                "field": "SubRegion",
+                                "type": "nominal",
+                                "scale": {
+                                    "domain": [
+                                    "Central Asia",
+                                    "East Asia",
+                                    "South Asia",
+                                    "Southeast Asia",
+                                    "Southwest Asia",
+                                    "Western Asia"
+                                    ],
+                                    "range": [
+                                    "#e41a1c",
+                                    "#377eb8",
+                                    "#984ea3",
+                                    "#ff7f00",
+                                    "#4daf4a",
+                                    "#a65628"
+                                    ]
+                                }
+                            },
+                            "opacity": {
+                                "condition": {"param": "region_filter", "value": 0.8},
+                                "value": 0.6
+                                },
+                            "tooltip": [
+                            {"field": "Country", "type": "nominal"},
+                            {"field": "LandArea", "type": "quantitative", "format": ","},
+                            {"field": "Population", "type": "quantitative", "format": ","},
+                            
+                            {"field": "Density", "type": "quantitative", "format": ","},
+                            {"field": "SubRegion", "type": "nominal"}
+                            ]
+                        }
+                    } 
+                ;
+                    
+                    // Embed the visualization in the container with id `vis`
+                    vegaEmbed('#Scatter', Scatterplot);
+                    </script>
+                </div>
+            </div>
+        </div>
+
+        <div class="pure-u-1-1">
+            
+            <hr>
+            <h2>Top 5 Most populated Country</h2>
+        </div>
+
+        <div class="pure-g">
+
+            <div class="pure-u-1-2">
                 
-                ]
-            }
-        }
-    ;
-        
-        // Embed the visualization in the container with id `vis`
-        vegaEmbed('#Bubble', Fertile);
-        </script>
+                <!-- Container for the visualization -->
+                <div id="Bar">
+
+                    <script>
+                    // Assign the specification to a local variable vlSpec.
+                    var Top5 = {
+                        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                        "width": 300,
+                        "description": "A bar chart of the top 5 populated countries.",
+                        "data": {
+                            "url": "https://raw.githubusercontent.com/crichard14/Data/main/Top5Populated.csv"
+                        },
+                        "height": {"step": 20},
+                        "mark": "bar",
+                        "encoding": {
+                            "y": {
+                                "field": "Country",
+                                 "type": "nominal", 
+                                 "sort": "-x",
+                                 "title":null
+                            },
+                            "x": {
+                            "aggregate": "sum",
+                            "type": "quantitative",
+                            "field": "Population",
+                            "title": "Population"
+                            },
+                            
+                            
+                            "tooltip": [
+                                {"field": "Country", "type": "nominal"},
+                                {"field": "Population", "type": "nominal","format": ","},
+                                {"field": "Density", "type": "quantitative", "format": ","} ,
+                                {"field": "SubRegion", "type": "nominal"}
+                            
+                            ],
+                            "color": {
+                                "scale":{
+                
+                                    "domain": [
+                                    "China",
+                                    "Bangladesh",
+                                    "India",
+                                    "Indonesia",
+                                    "Pakistan"
+                                    ],
+                                    "range": [
+                                    "#ab6515",
+                                    "#FFEBCD",
+                                    "#FFEBCD",
+                                    "#FFEBCD",
+                                    "#FFEBCD"
+                                    ]
+                                    
+                                },
+                                    "field": "Country",
+                                    "type": "nominal",
+                                    "legend": null
+                                    
+                            }
+                        }
+                    }
+                    // Embed the visualization in the container with id `vis`
+                    vegaEmbed('#Bar', Top5);
+                    </script>
+                </div>
+            </div>
+
+            <div class="pure-u-1-2">
+                <p id="top5text"> China is the most populated country 
+                    in Asia, in fact it is the most populated country in the face of the planet! 
+                    followed by the U.S in the second place. 
+                    China is populated by over 1.43 billion people, but however it is not the densest 
+                    country due to it's 9,388,211 sq Km of land area. It is mindblowing to see that 
+                    4 of the top 5 most populated country are in Asia!
+                    </p>
+            </div>
+
+            
+        </div>
+
+        <div class="pure-g">
+
+            <div class="pure-u-1-1">
+
+                <hr>
+                <h2>Fertility Rate Vs Age</h2>
+                <!-- Container for the visualization -->
+                <div id="Bubble">
+
+                    <script>
+                    // Assign the specification to a local variable vlSpec.
+                    var Fertile = {
+                        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                        "width": 600,
+                        "height": 600,
+                        "title": "Fertility Rate per Country 2020",
+                        "data": {
+                            "url": "https://raw.githubusercontent.com/crichard14/Data/main/AsiaPopulation2020.csv"
+                        },
+                        "params":[
+                            {
+                            "name": "reg_highlight",
+                            "select": {"type": "point", "fields": ["SubRegion"]},
+                            "bind": "legend"
+                            },
+                            {
+                        "name": "Population_Above",
+                        "value": 0,
+                        "bind": {
+                            "input": "range",
+                            "min": 0,
+                            "max": 100000000,
+                            "step": 1000000,
+                            "name": "Minimum Population: "
+                            }  
+                        }
+
+                        ],
+                        "transform": [
+                        {"filter": "datum.Population > Population_Above"}
+                        ],
+
+
+                        "mark": "circle",
+                        "encoding": {
+                            "x": {
+                                "field": "MedAge",
+                                "type": "quantitative",
+                                "title": "Median Age"
+                            },
+                            "y": {
+                                "field": "FertRate",
+                                "type": "quantitative",
+                                "title": "Fertility Rate(%)"
+                            },
+                            "color": {
+                                "field": "SubRegion",
+                                "type": "nominal",
+                                "scale": {
+                                    "domain": [
+                                    "Central Asia",
+                                    "East Asia",
+                                    "South Asia",
+                                    "Southeast Asia",
+                                    "Southwest Asia",
+                                    "Western Asia"
+                                    ],
+                                    "range": [
+                                    "#e41a1c",
+                                    "#377eb8",
+                                    "#984ea3",
+                                    "#ff7f00",
+                                    "#4daf4a",
+                                    "#a65628"
+                                    ]
+                                }
+
+                            },
+                            "opacity": {
+                                "condition": {"param": "reg_highlight", "value": 0.8},
+                                "value": 0.2
+                                },
+
+                            "size": {
+                                "field": "Population",
+                                "type": "quantitative",
+                                "scale": {
+                                    "type": "threshold",
+                                    "domain": [1000000, 10000000, 50000000, 100000000,  500000000,900000000],
+                                    "range": [ 50, 150, 200, 300, 400, 500, 900]
+                                    },
+                                
+                                "legend": {"format": ".1s"}
+                            },
+                            "tooltip": [
+                                {"field": "Country", "type": "nominal"},
+                                {"field": "MedAge", "type": "nominal"},
+                                {"field": "FertRate", "type": "quantitative", "format": ","},
+                                {"field": "Population", "type": "quantitative", "format": ","}  ,
+                                {"field": "SubRegion", "type": "nominal"} 
+                            
+                            ]
+                        }
+                    }
+                ;
+                    
+                    // Embed the visualization in the container with id `vis`
+                    vegaEmbed('#Bubble', Fertile);
+                    </script>
+                </div>
+                <p> We can see clearly that theres a negative linear relation between fertility rate 
+                    and the median age. Meaning the older the majority of the population, the 
+                    lower the ferlitity rate of the country.
+                    The factors contributing to the declining birthrate in Japan include the declining 
+                    marriage rate, an increase in the average age of those getting married, economic 
+                    burden, childcare burden, later child-bearing, and infertility. There is a gender 
+                    difference in role division, with 70% of unmarried people live with their parents 
+                    and continue to work while leaving the household chores to their mothers. 
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/30270298/" id="bodylink">Read full article.</a> </p>
+
+            </div>
+
+        </div>
+
     </div>
-    
+
+    <div class="footer">
+        <div class="pure-g">
+            <div class="pure-u-1-2">
+                <p class="footertext">A visualisation by Christopher Richard Hartono</p>
+                <p class="footertext">Email: <a href="gmail.com">char0066@student.monash.edu</a> </p>
+                <p class="footertext">Dataset provided from 
+                    <a href="https://www.kaggle.com/sansuthi/asian-countries-by-population">Kaggle.com</a> 
+                </p>
+            </div>
+            <div class="pure-u-1-2">
+                
+
+            </div>
+        </div>
+    </div>
+
   </body>
 </html>
