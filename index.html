@@ -1,22 +1,215 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Visualization</title>
-    <!--vegalite-->
-    <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.17.0"></script>
+<html>
+  <head>
+    <title>Vega-Lite Bar Chart</title>
+    <meta charset="utf-8" />
 
-    <!--Css-->
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.18.2"></script>
+
     <link rel="stylesheet" href="Assignment2.css">
-</head>
-<body>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald&family=Ubuntu&display=swap" rel="stylesheet">
+    <style media="screen">
+      /* Add space between Vega-Embed links  */
+      .vega-actions a {
+        margin-right: 5px;
+      }
+    </style>
+  </head>
+  <body>
     <h1>Data Visualization 2</h1>
     <h2>Choropleth Map</h2>
-    <h2>Top 5 Most populated Country</h2>
+    <div id="Choro">
+        <script>
+        // Assign the specification to a local variable vlSpec.
+        var Choropleth = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "title": "Density of Asian Countries in 2020 (People/KM Square)",
+            "width": 800,
+            "height": 600,
+            "projection": {"type": "equirectangular"},
+            "data": {
+                "url": "https://raw.githubusercontent.com/crichard14/Data/gh-pages/Asia.json",
+                "format": {"type": "topojson", "feature": "Asia"}
+            },
+            "transform": [
+            {
+            "lookup": "properties.name",
+            "from": {
+            "data": {
+            "url": "https://raw.githubusercontent.com/crichard14/Data/gh-pages/AsiaPopulation2020.csv"
+            },
+            "key": "Country",
+            "fields": ["Density"]
+            }
+            }
+            ],
+            "mark": {"type": "geoshape"},
+            "encoding": {
+                "color": {
+                    "field": "Density",
+                    "type": "quantitative",
+                    "scale": {"type": "log"}
+                },
+                "tooltip": [
+                    {"field": "properties.name", "type": "nominal", "title": "Country"},
+                    {"field": "Density", "type": "quantitative"},
+                ]
+            }
+        }
+    ;
+        
+        // Embed the visualization in the container with id `vis`
+        vegaEmbed('#Choro', Choropleth);
+        </script>
+    </div>
+
     <h2>Scatterplot</h2>
-</body>
+    <!-- Container for the visualization -->
+    <div id="Scatter">
+
+        <script>
+        // Assign the specification to a local variable vlSpec.
+        var Scatterplot = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "width": 400,
+            "height": 400,
+            "description": "A scatterplot showing Population vs Area (Density).",
+            "data": {"url": "https://raw.githubusercontent.com/crichard14/Data/main/AsiaPopulation2020.csv"},
+            "mark": "point",
+            "transform": [{
+                "calculate": "'https://www.google.com/search?q=' + datum.Name", "as": "url"
+            }],
+            "encoding": {
+                "x": {"field": "LandArea", "type": "quantitative","scale": {"type": "log", "domain": [1, 10000000000]}
+                },
+                "y": {"field": "Population", "type": "quantitative","scale": {"type": "log","domain": [1, 10000000000]}
+                },
+                "color": {"field": "Country", "type": "nominal"},
+                "tooltip": [
+                    {"field": "Country", "type": "nominal"},
+                    {"field": "LandArea", "type": "quantitative","format":","},
+                    {"field": "Population", "type": "quantitative","format":","}
+                ]
+            }
+        }  
+    ;
+        
+        // Embed the visualization in the container with id `vis`
+        vegaEmbed('#Scatter', Scatterplot);
+        </script>
+    </div>
+    
+
+    <h2>Top 5 Most populated Country</h2>
+    <!-- Container for the visualization -->
+    <div id="Bar">
+
+        <script>
+        // Assign the specification to a local variable vlSpec.
+        var Top5 = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "description": "A bar chart that sorts the y-values by the x-values.",
+            "data": {"url": "https://raw.githubusercontent.com/crichard14/Data/main/Top5Populated.csv"},
+            "height": {"step": 20},
+            
+            "mark": "bar",
+            "encoding": {
+                "y": {
+                    "field": "Country",
+                    "type": "nominal",
+                    "sort": "-x"
+                },
+                "x": {
+                    "aggregate": "sum",
+                    "type": "quantitative",
+                    "field": "Population",
+                    "title": "population"
+                }
+            }
+    }
+    ;
+        
+        // Embed the visualization in the container with id `vis`
+        vegaEmbed('#Bar', Top5);
+        </script>
+    </div>
+
+    <h2>Fertility Rate Vs Age</h2>
+    <!-- Container for the visualization -->
+    <div id="Bubble">
+
+        <script>
+        // Assign the specification to a local variable vlSpec.
+        var Fertile = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "width": 600,
+            "height": 600,
+            "title": "Fertility Rate per Country 2020",
+            "data": {
+            "url": "https://raw.githubusercontent.com/crichard14/Data/main/AsiaPopulation2020.csv"
+            },
+            "params":[
+                {
+                "name": "pop_highlight",
+                "select": {"type": "point", "fields": ["Country"]},
+                "bind": "legend"
+                }
+            ],
+        
+            "mark": "circle",
+            "encoding": {
+                "x": {
+                    "field": "MedAge",
+                    "type": "quantitative",
+                    "title": "Median Age"
+                },
+                "y": {
+                    "field": "FertRate",
+                    "type": "quantitative",
+                    "title": "Fertility Rate"
+                },
+                "color": {
+                    "field": "Country",
+                    "type": "nominal"
+                },
+                "opacity": {
+                    "condition": {"param": "pop_highlight", "value": 0.6},
+                    "value": 0.2
+                    },
+            
+                "size": {
+                    "field": "Population",
+                    "type": "quantitative",
+                    "scale": {
+                    "type": "threshold",
+                    "domain": [1000000, 10000000, 50000000, 100000000,  500000000,900000000],
+                    "range": [ 50, 150, 200, 300, 400, 500, 900]
+                    },
+                    
+                    "legend": {"format": ".1s"}
+                },
+                "tooltip": [
+                    {"field": "Country", "type": "nominal"},
+                    {"field": "MedAge", "type": "nominal"},
+                    {"field": "FertRate", "type": "quantitative", "format": ","},
+                    {"field": "Population", "type": "quantitative", "format": ","}
+                    
+                    
+                
+                ]
+            }
+        }
+    ;
+        
+        // Embed the visualization in the container with id `vis`
+        vegaEmbed('#Bubble', Fertile);
+        </script>
+    </div>
+    
+  </body>
 </html>
