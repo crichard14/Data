@@ -79,24 +79,92 @@
             "width": 400,
             "height": 400,
             "description": "A scatterplot showing Population vs Area (Density).",
-            "data": {"url": "https://raw.githubusercontent.com/crichard14/Data/main/AsiaPopulation2020.csv"},
-            "mark": "point",
-            "transform": [{
-                "calculate": "'https://www.google.com/search?q=' + datum.Name", "as": "url"
-            }],
+            "data": {
+                "url": "https://raw.githubusercontent.com/crichard14/Data/main/AsiaPopulation2020.csv"
+            },
+            "params": [
+                {
+                "name": "region_filter",
+                "bind": {
+                    "input": "select",
+                    "options": [
+                    null,
+                    "Central Asia",
+                    "East Asia",
+                    "South Asia",
+                    "Southeast Asia",
+                    "Southwest Asia",
+                    "Western Asia"
+                    ],
+                    "labels":[
+                    "Show All",
+                    "Central Asia",
+                    "East Asia",
+                    "South Asia",
+                    "Southeast Asia",
+                    "Southwest Asia",
+                    "Western Asia"
+                    ],
+                    "name": "Region Selection: "
+                }
+                }
+            ],
+
+
+            "mark": "circle",
+            "transform": [
+                
+                {"filter": "region_filter == null || datum.SubRegion == region_filter"}
+            ],
             "encoding": {
-                "x": {"field": "LandArea", "type": "quantitative","scale": {"type": "log", "domain": [1, 10000000000]}
+                "x": {
+                "field": "LandArea",
+                "type": "quantitative",
+                "title": "Land Area (P/KMsquare)",
+                "scale": {"type": "log", "domain": [1, 10000000000]}
                 },
-                "y": {"field": "Population", "type": "quantitative","scale": {"type": "log","domain": [1, 10000000000]}
+                "y": {
+                "field": "Population",
+                "type": "quantitative",
+                "title": "Population",
+                "scale": {"type": "log", "domain": [1, 10000000000]}
                 },
-                "color": {"field": "Country", "type": "nominal"},
+                "size":{
+                    "scale":{}
+                },
+                "color": {
+                    "field": "SubRegion",
+                    "type": "nominal",
+                    "scale": {
+                        "domain": [
+                        "Central Asia",
+                        "East Asia",
+                        "South Asia",
+                        "Southeast Asia",
+                        "Southwest Asia",
+                        "Western Asia"
+                        ],
+                        "range": [
+                        "#e41a1c",
+                        "#377eb8",
+                        "#984ea3",
+                        "#ff7f00",
+                        "#4daf4a",
+                        "#a65628"
+                        ]
+                    }
+                },
+                "opacity": {
+                    "condition": {"param": "region_filter", "value": 0.8},
+                    "value": 0.6
+                    },
                 "tooltip": [
-                    {"field": "Country", "type": "nominal"},
-                    {"field": "LandArea", "type": "quantitative","format":","},
-                    {"field": "Population", "type": "quantitative","format":","}
+                {"field": "Country", "type": "nominal"},
+                {"field": "LandArea", "type": "quantitative", "format": ","},
+                {"field": "Population", "type": "quantitative", "format": ","}
                 ]
             }
-        }  
+        } 
     ;
         
         // Embed the visualization in the container with id `vis`
@@ -113,27 +181,31 @@
         // Assign the specification to a local variable vlSpec.
         var Top5 = {
             "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "description": "A bar chart that sorts the y-values by the x-values.",
-            "data": {"url": "https://raw.githubusercontent.com/crichard14/Data/main/Top5Populated.csv"},
+            "width": 400,
+            "height": 400,
+            "description": "Top 5 most populated Country.",
+            "data": {
+                "url": "https://raw.githubusercontent.com/crichard14/Data/main/Top5Populated.csv"
+            },
             "height": {"step": 20},
-            
             "mark": "bar",
             "encoding": {
-                "y": {
-                    "field": "Country",
-                    "type": "nominal",
-                    "sort": "-x"
-                },
+                "y": {"field": "Country", "type": "nominal", "sort": "-x"},
                 "x": {
-                    "aggregate": "sum",
-                    "type": "quantitative",
-                    "field": "Population",
-                    "title": "population"
-                }
+                "aggregate": "sum",
+                "type": "quantitative",
+                "field": "Population",
+                "title": "population"
+                },
+                "tooltip": [
+                    {"field": "Country", "type": "nominal"},
+                    {"field": "MedAge", "type": "nominal"},
+                    {"field": "FertRate", "type": "quantitative", "format": ","},
+                    {"field": "Population", "type": "quantitative", "format": ","}  
+                
+                ]
             }
-    }
-    ;
-        
+         }
         // Embed the visualization in the container with id `vis`
         vegaEmbed('#Bar', Top5);
         </script>
@@ -151,16 +223,32 @@
             "height": 600,
             "title": "Fertility Rate per Country 2020",
             "data": {
-            "url": "https://raw.githubusercontent.com/crichard14/Data/main/AsiaPopulation2020.csv"
+                "url": "https://raw.githubusercontent.com/crichard14/Data/main/AsiaPopulation2020.csv"
             },
             "params":[
                 {
-                "name": "pop_highlight",
-                "select": {"type": "point", "fields": ["Country"]},
+                "name": "reg_highlight",
+                "select": {"type": "point", "fields": ["SubRegion"]},
                 "bind": "legend"
-                }
+                },
+                {
+            "name": "Population_Above",
+            "value": 0,
+            "bind": {
+                "input": "range",
+                "min": 0,
+                "max": 100000000,
+                "step": 1000000,
+                "name": "Minimum Population: "
+                }  
+            }
+
             ],
-        
+            "transform": [
+            {"filter": "datum.Population > Population_Above"}
+            ],
+
+
             "mark": "circle",
             "encoding": {
                 "x": {
@@ -171,25 +259,44 @@
                 "y": {
                     "field": "FertRate",
                     "type": "quantitative",
-                    "title": "Fertility Rate"
+                    "title": "Fertility Rate(%)"
                 },
                 "color": {
-                    "field": "Country",
-                    "type": "nominal"
+                    "field": "SubRegion",
+                    "type": "nominal",
+                    "scale": {
+                        "domain": [
+                        "Central Asia",
+                        "East Asia",
+                        "South Asia",
+                        "Southeast Asia",
+                        "Southwest Asia",
+                        "Western Asia"
+                        ],
+                        "range": [
+                        "#e41a1c",
+                        "#377eb8",
+                        "#984ea3",
+                        "#ff7f00",
+                        "#4daf4a",
+                        "#a65628"
+                        ]
+                    }
+
                 },
                 "opacity": {
-                    "condition": {"param": "pop_highlight", "value": 0.6},
+                    "condition": {"param": "reg_highlight", "value": 0.8},
                     "value": 0.2
                     },
-            
+
                 "size": {
                     "field": "Population",
                     "type": "quantitative",
                     "scale": {
-                    "type": "threshold",
-                    "domain": [1000000, 10000000, 50000000, 100000000,  500000000,900000000],
-                    "range": [ 50, 150, 200, 300, 400, 500, 900]
-                    },
+                        "type": "threshold",
+                        "domain": [1000000, 10000000, 50000000, 100000000,  500000000,900000000],
+                        "range": [ 50, 150, 200, 300, 400, 500, 900]
+                        },
                     
                     "legend": {"format": ".1s"}
                 },
@@ -197,9 +304,7 @@
                     {"field": "Country", "type": "nominal"},
                     {"field": "MedAge", "type": "nominal"},
                     {"field": "FertRate", "type": "quantitative", "format": ","},
-                    {"field": "Population", "type": "quantitative", "format": ","}
-                    
-                    
+                    {"field": "Population", "type": "quantitative", "format": ","}  
                 
                 ]
             }
